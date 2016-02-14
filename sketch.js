@@ -19,12 +19,18 @@ var b;
 var dk;
 var j, k;
 var i=0;
+var swing=0;
+var map1 = 400;
+var map2 = 400;
+var leafchange = 0;
+var leafRed;
+var leafGreen;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  randomX = Math.floor(random(0,windowWidth-200));
-  randomY = Math.floor(random(0,windowHeight-200));
-  stroke(0);
+  // randomX = Math.floor(random(0,windowWidth-200));
+  // randomY = Math.floor(random(0,windowHeight-200));
+  stroke(153, 102, 51);
 }
 
 function draw() {
@@ -67,8 +73,32 @@ function draw() {
   b = 192+ (1- Math.abs(x / 560)) * 63;
   dk = Math.abs(x / 560) * 150;
 
-  theta1 = map(randomX,0,width,PI/8,PI/4.5);
-  theta2 = map(randomY,0,height,PI/8,PI/4.5);
+  if (swing <50){
+    map1+=10;
+    map2-=10;
+    swing++;
+  }
+  else if (swing >= 50 && swing < 100){
+    map1-= 10;
+    map2+= 10;
+    swing++;
+  }
+  else if (swing >= 100 && swing < 150){
+    map1-= 10;
+    map2+= 10;
+    swing++;
+  }
+  else if (swing >= 150 && swing < 200){
+    map1+= 10;
+    map2-= 10;
+    swing++;
+  }
+  else if (swing = 200){
+    swing = 0;
+  }
+
+  theta1 = map(map1,0,width,PI/8,PI/4.5);
+  theta2 = map(map2,0,height,PI/8,PI/4.5);
 
   push();
   branch(200,20);
@@ -113,9 +143,40 @@ function branch(len, thick) {
   }
 
   else{
-    leafRed = floor(mouseX % 255);
-    leafGreen = floor(mouseY % 255);
-    fill(leafRed,leafGreen,0);
+  // if (leafchange <50){
+  //   leafRed+=1;
+  //   leafGreen-=1;
+  //   leafchange++;
+  // }
+  // else if (leafchange >= 50 && leafchange < 100){
+  //   leafRed-= 1;
+  //   leafGreen+= 1;
+  //   leafchange++;
+  // }
+  // else if (leafchange >= 100 && leafchange < 150){
+  //   leafRed-= 1;
+  //   leafGreen+= 1;
+  //   leafchange++;
+  // }
+  // else if (leafchange >= 150 && leafchange < 200){
+  //   leafRed+= 1;
+  //   leafGreen-= 1;
+  //   leafchange++;
+  // }
+  // else if (leafchange = 200){
+  //   leafchange = 0;
+  // }
+    leafRed = floor(y%255);
+    if (leafRed < 0){
+      leafRed = -1*leafRed;
+    }
+
+    leafGreen = floor(x%255);
+    if (leafGreen < 0){
+      leafGreen = -1*leafGreen;
+    }
+
+    fill(leafRed, leafGreen,0);
     noStroke();
     var a = random(50,100);
     if(y > 0) {
@@ -134,14 +195,14 @@ ellipse(j+i, k, num*2, num);
 i+=5;
 }
 
-function keyPressed() {
-  randomX = Math.floor(random(0,windowWidth));
-  randomY = Math.floor(random(0,windowHeight));
-  strokeR = Math.floor(random(0,200));
-  strokeG = Math.floor(random(0,200));
-  strokeB = Math.floor(random(0,200));
-  stroke(strokeR,strokeG,strokeB);
-}
+// function keyPressed() {
+//   randomX = Math.floor(random(0,windowWidth));
+//   randomY = Math.floor(random(0,windowHeight));
+//   strokeR = Math.floor(random(0,200));
+//   strokeG = Math.floor(random(0,200));
+//   strokeB = Math.floor(random(0,200));
+//   stroke(strokeR,strokeG,strokeB);
+// }
 
 
 
