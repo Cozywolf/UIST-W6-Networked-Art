@@ -60,10 +60,21 @@ function draw() {
   b = 192 + (1 - Math.abs(x / 560)) * 63;
   dk = Math.abs(x / 560) * 150;
 
-  //sun size and location
-  // push();
-  // cloud();
-  // pop();
+//draw star and cloud
+
+push();
+  for (var i = 0; i < star.length; ++i) {
+    fill(star[i].c);
+    noStroke();
+    var pikerandom = random(80, 100);
+    if (y > 0) {
+      fill(star[i].c)
+      ellipse(star[i].x, star[i].y, pikerandom*2, pikerandom);
+    } else
+      ellipse(star[i].x, star[i].y, pikerandom/4, 4);
+      ellipse(star[i].x, star[i].y, 4, pikerandom/4);
+  }
+pop();
 
   push();
   translate(windowWidth / 2, windowHeight);
@@ -151,6 +162,8 @@ function draw() {
 
   pop();
 
+
+//draw flower
   for (var i = 0; i < flower.length; ++i) {
     fill(flower[i].c);
     noStroke();
@@ -158,17 +171,7 @@ function draw() {
     ellipse(flower[i].x, flower[i].y, 20, 20);
 
   }
-  for (var i = 0; i < star.length; ++i) {
-    fill(star[i].c);
-    noStroke();
-    var pikerandom = random(80, 100);
-    if (y > 0) {
-      fill(star[i].c)
-      ellipse(star[i].x, star[i].y, pikerandom*2, pikerandom);
-    } else
-      ellipse(star[i].x, star[i].y, pikerandom/4, 4);
-      ellipse(star[i].x, star[i].y, 4, pikerandom/4);
-  }
+
 }
 
 
