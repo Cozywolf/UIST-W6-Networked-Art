@@ -61,8 +61,7 @@ function draw() {
   dk = Math.abs(x / 560) * 150;
 
 //draw star and cloud
-
-push();
+push(); // No.1
   for (var i = 0; i < star.length; ++i) {
     fill(star[i].c);
     noStroke();
@@ -74,12 +73,13 @@ push();
       ellipse(star[i].x, star[i].y, pikerandom/4, 4);
       ellipse(star[i].x, star[i].y, 4, pikerandom/4);
   }
-pop();
+pop();  // No.1
 
-  push();
+//sun size and location
+  push(); // No.2
   translate(windowWidth / 2, windowHeight);
   var d1 = 50 + (sin(angle) * windowWidth / 35) + windowWidth / 35;
-  push();
+  push(); // No.3
   fill(250, 147, 45);
   stroke(252, 252, 192);
   ellipse(x, -y, d1, d1);
@@ -88,7 +88,7 @@ pop();
   fill(255, 204, 0);
   stroke(255, 204, 0);
   arc(-x, y, d1, d1, PI / 4, PI + QUARTER_PI, CHORD);
-  pop();
+  pop(); // No.3
 
   angle += PI / 187.5;
   ang += PI / 375;
@@ -98,15 +98,17 @@ pop();
   b = 192 + (1 - Math.abs(x / 560)) * 63;
   dk = Math.abs(x / 560) * 150;
 
+
+
   // ground
-  push();
+  push(); // No.4
   translate(-windowWidth / 2, -windowHeight);
   fill(161, 212, 144);
   rect(0, 0.7 * windowHeight, windowWidth, windowHeight / 2);
-  pop();
+  pop(); // No.4
 
   // path
-  push();
+  push(); // No.5
   translate(-windowWidth / 2, -windowHeight);
   fill(115, 64, 47);
   noStroke();
@@ -114,7 +116,24 @@ pop();
   fill(161, 212, 144);
   noStroke();
   ellipse(windowWidth, 1.1 * windowHeight, 2 * 0.6 * windowWidth, 2 * 0.38 * windowHeight)
-  pop();
+  pop(); // No.5
+
+//draw bigflower
+push();
+  translate(-windowWidth / 2, -windowHeight);
+  for (var i = 0; i < flower.length; ++i) {
+    strokeWeight(3);
+    line(flower[i].x,flower[i].y,flower[i].x, flower[i].y-50);
+    fill(flower[i].c);
+    strokeWeight(0);
+    ellipse(flower[i].x+15, flower[i].y-50, 20, 20);
+    ellipse(flower[i].x-15, flower[i].y-50, 20, 20);
+    ellipse(flower[i].x, flower[i].y-35, 20, 20);
+    ellipse(flower[i].x, flower[i].y-65, 20, 20);
+    fill(215,135,128);
+    ellipse(flower[i].x, flower[i].y-50, 20, 20);
+  }
+pop();
 
 
   //tree swing
@@ -138,39 +157,28 @@ pop();
     swing = 0;
   }
 
-
   // define tree angle
   theta1 = map(map1, 0, width, PI / 8, PI / 4.5);
   theta2 = map(map2, 0, height, PI / 8, PI / 4.5);
 
   // draw the first(center) tree
-  push();
+  push(); // No.6
   branch(0.2 * windowHeight, 0.02 * windowHeight);
-  pop();
+  pop(); // No.6
 
   // draw the second (left) tree
-  push();
+  push(); // No.7
   translate(-windowWidth / 3, -windowHeight / 6)
   branch(0.1 * windowHeight, 0.01 * windowHeight);
-  pop();
+  pop(); // No.7
 
   // draw the third (right) tree
-  push();
+  push(); // No.8
   translate(windowWidth / 3, -windowHeight / 4)
   branch(0.05 * windowHeight, 0.005 * windowHeight);
-  pop();
+  pop(); // No.8
 
-  pop();
-
-
-//draw flower
-  for (var i = 0; i < flower.length; ++i) {
-    fill(flower[i].c);
-    noStroke();
-    // line(flower[i].x,flower[i].y, -50);
-    ellipse(flower[i].x, flower[i].y, 20, 20);
-
-  }
+  pop(); // No.2
 
 }
 
