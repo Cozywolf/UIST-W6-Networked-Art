@@ -4,3 +4,5 @@ Steven and TingWei's UIST 520 W6 assignment
 How to pull the files
 
 How to push the files
+
+Test Branching
