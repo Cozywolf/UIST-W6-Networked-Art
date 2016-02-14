@@ -1,3 +1,8 @@
+var SOCKET_URL = 'wss://fierce-plains-17880.herokuapp.com/';
+var TEAM_NAME = 'letterpress';
+var socket;
+
+
 var theta1;
 var theta2;
 var randomX;
@@ -25,15 +30,21 @@ var map2 = 400;
 var leafchange = 0;
 var leafRed;
 var leafGreen;
+var flower = [];
+var flowerLimit = 20;
+var flowerColorRed, flowerColorBlue, flowerColorGreen;
+var star = [];
+var starLimit = 20;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  // randomX = Math.floor(random(0,windowWidth-200));
-  // randomY = Math.floor(random(0,windowHeight-200));
+  socket = io(SOCKET_URL + TEAM_NAME); // Open a socket connection to the server.
   stroke(153, 102, 51);
+  socket.on('flower', addFlower);
+  socket.on('star', addStar);
 }
 
 function draw() {
+  createCanvas(windowWidth, windowHeight);
   d = 0.45 * windowWidth;
   x = d * cos(ang);
   y = d * sin(ang);
@@ -44,8 +55,10 @@ function draw() {
   } else {
     background(dk, dk, dk);
   }
-
-
+  r = 250;
+  g = 245;
+  b = 192 + (1 - Math.abs(x / 560)) * 63;
+  dk = Math.abs(x / 560) * 150;
 
   //sun size and location
   // push();
@@ -74,15 +87,14 @@ function draw() {
   b = 192 + (1 - Math.abs(x / 560)) * 63;
   dk = Math.abs(x / 560) * 150;
 
-// ground
+  // ground
   push();
   translate(-windowWidth / 2, -windowHeight);
   fill(161, 212, 144);
-  noStroke();
   rect(0, 0.7 * windowHeight, windowWidth, windowHeight / 2);
   pop();
 
-// path
+  // path
   push();
   translate(-windowWidth / 2, -windowHeight);
   fill(115, 64, 47);
@@ -93,6 +105,8 @@ function draw() {
   ellipse(windowWidth, 1.1 * windowHeight, 2 * 0.6 * windowWidth, 2 * 0.38 * windowHeight)
   pop();
 
+
+  //tree swing
   if (swing < 50) {
     map1 += 10;
     map2 -= 10;
@@ -113,28 +127,48 @@ function draw() {
     swing = 0;
   }
 
+
+  // define tree angle
   theta1 = map(map1, 0, width, PI / 8, PI / 4.5);
   theta2 = map(map2, 0, height, PI / 8, PI / 4.5);
 
+  // draw the first(center) tree
   push();
-  branch(200, 20);
+  branch(0.2 * windowHeight, 0.02 * windowHeight);
   pop();
 
+  // draw the second (left) tree
   push();
-  translate(-windowWidth / 3, -windowHeight/6)
-  branch(100,10);
+  translate(-windowWidth / 3, -windowHeight / 6)
+  branch(0.1 * windowHeight, 0.01 * windowHeight);
   pop();
 
+  // draw the third (right) tree
   push();
-  translate(windowWidth / 3, -windowHeight/4)
-  branch(50,5);
+  translate(windowWidth / 3, -windowHeight / 4)
+  branch(0.05 * windowHeight, 0.005 * windowHeight);
   pop();
 
   pop();
 
+  for (var i = 0; i < flower.length; ++i) {
+    fill(flower[i].c);
+    noStroke();
+    // line(flower[i].x,flower[i].y, -50);
+    ellipse(flower[i].x, flower[i].y, 20, 20);
 
-
-
+  }
+  for (var i = 0; i < star.length; ++i) {
+    fill(star[i].c);
+    noStroke();
+    var pikerandom = random(80, 100);
+    if (y > 0) {
+      fill(star[i].c)
+      ellipse(star[i].x, star[i].y, pikerandom*2, pikerandom);
+    } else
+      ellipse(star[i].x, star[i].y, pikerandom/4, 4);
+      ellipse(star[i].x, star[i].y, 4, pikerandom/4);
+  }
 }
 
 
@@ -168,29 +202,7 @@ function branch(len, thick) {
     //branch(len);
     pop();
   } else {
-    // if (leafchange <50){
-    //   leafRed+=1;
-    //   leafGreen-=1;
-    //   leafchange++;
-    // }
-    // else if (leafchange >= 50 && leafchange < 100){
-    //   leafRed-= 1;
-    //   leafGreen+= 1;
-    //   leafchange++;
-    // }
-    // else if (leafchange >= 100 && leafchange < 150){
-    //   leafRed-= 1;
-    //   leafGreen+= 1;
-    //   leafchange++;
-    // }
-    // else if (leafchange >= 150 && leafchange < 200){
-    //   leafRed+= 1;
-    //   leafGreen-= 1;
-    //   leafchange++;
-    // }
-    // else if (leafchange = 200){
-    //   leafchange = 0;
-    // }
+
     leafRed = floor(y % 255);
     if (leafRed < 0) {
       leafRed = -1 * leafRed;
@@ -198,7 +210,7 @@ function branch(len, thick) {
 
     leafGreen = floor(x % 255);
     if (leafGreen < 0) {
-      leafGreen = -1 * leafGreen;
+      leafGreen = -leafGreen;
     }
 
     fill(leafRed, leafGreen, 0);
@@ -211,16 +223,49 @@ function branch(len, thick) {
   }
 }
 
-
-function addCloud(cloudx, cloudy, i) {
-  push();
-  num = random(80, 90);
-  noStroke();
-  fill(200, 200, 255);
-  ellipse(cloudx + i, cloudy, num * 2, num);
-  i += 5;
-  pop()
+function addFlower(x, y, r, g, b) {
+  flower.push({
+    x: x,
+    y: y,
+    c: 'rgb(' + r + ',' + g + ',' + b + ')'
+  });
+  if (flowerLimit > 0 && flower.length > flowerLimit) flower.shift();
 }
+
+function addStar(x, y, r, g, b) {
+  star.push({
+    x: x,
+    y: y,
+    c: 'rgb(' + r + ',' + g + ',' + b + ')'
+  });
+  if (starLimit > 0 && star.length > starLimit) star.shift();
+}
+
+function mousePressed() {
+  if (mouseY > 0.7 * windowHeight) {
+    flowerColorRed = floor(random(0, 255));
+    flowerColorGreen = floor(random(0, 255));
+    flowerColorBlue = floor(random(0, 255));
+    addFlower(mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
+    socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
+  } else if (mouseY < 0.7 * windowHeight) {
+    starColorRed = floor(random(0, 255));
+    starColorGreen = floor(random(0, 255));
+    starColorBlue = floor(random(0, 255));
+    addStar(mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
+    socket.emit('star', mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
+  }
+}
+
+// function addCloud(cloudx, cloudy, i) {
+//   push();
+//   num = random(80, 90);
+//   noStroke();
+//   fill(200, 200, 255);
+//   ellipse(cloudx + i, cloudy, num * 2, num);
+//   i += 5;
+//   pop()
+// }
 
 // function keyPressed() {
 //   randomX = Math.floor(random(0,windowWidth));
@@ -231,16 +276,14 @@ function addCloud(cloudx, cloudy, i) {
 //   stroke(strokeR,strokeG,strokeB);
 // }
 
-
-
-function mousePressed() {
-  if (mouseY <= windowHeight / 2) {
-    var diameter = dist(mouseX, mouseY, windowWidth / 2, windowHeight - 200);
-    if (diameter > 400) {
-      j = mouseX;
-      k = mouseY;
-      i = 0;
-      addCloud(j, k, i);
-    }
-  }
-}
+// function mousePressed() {
+//   if (mouseY <= windowHeight / 2) {
+//     var diameter = dist(mouseX, mouseY, windowWidth / 2, windowHeight - 200);
+//     if (diameter > 400) {
+//       j = mouseX;
+//       k = mouseY;
+//       i = 0;
+//       addCloud(j, k, i);
+//     }
+//   }
+// }
