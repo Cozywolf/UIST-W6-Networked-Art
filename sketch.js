@@ -44,6 +44,7 @@ function setup() {
   socket.on('flower', addFlower);
   socket.on('star', addStar);
   socket.on('cloud', addCloud);
+  socket.on('clear', clearAll);
 }
 
 function draw() {
@@ -297,6 +298,19 @@ function mousePressed() {
     addStar(mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
     socket.emit('star', mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
   }
+}
+
+function keyPressed(){
+  if(keyCode===ENTER){
+    clearAll();
+    socket.emit('clear');
+  }
+}
+
+function clearAll(){
+  star = [];
+  cloud = [];
+  flower = [];
 }
 
 // function addCloud(cloudx, cloudy, i) {
