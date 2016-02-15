@@ -34,7 +34,7 @@ var flowerColorRed, flowerColorBlue, flowerColorGreen;
 var star = [];
 var starLimit = 20;
 var cloud = [];
-var cloudLimit = 20;
+var cloudLimit = 15;
 
 
 
@@ -95,12 +95,11 @@ function draw() {
   var d1 = 50 + (sin(angle) * windowWidth / 35) + windowWidth / 35;
   push(); // No.3
   fill(250, 147, 45);
-  stroke(252, 252, 192);
+  noStroke();
   ellipse(x, -y, d1, d1);
 
   // moon size and location
   fill(255, 204, 0);
-  stroke(255, 204, 0);
   arc(-x, y, d1, d1, PI / 4, PI + QUARTER_PI, CHORD);
   pop(); // No.3
 
@@ -112,11 +111,10 @@ function draw() {
   b = 192 + (1 - Math.abs(x / 560)) * 63;
   dk = Math.abs(x / 560) * 150;
 
-
-
   // ground
   push(); // No.4
   translate(-windowWidth / 2, -windowHeight);
+  noStroke();
   fill(161, 212, 144);
   rect(0, 0.7 * windowHeight, windowWidth, windowHeight / 2);
   pop(); // No.4
@@ -301,7 +299,7 @@ function mousePressed() {
 }
 
 function keyPressed(){
-  if(keyCode===ENTER){
+  if(keyCode===32){
     clearAll();
     socket.emit('clear');
   }
