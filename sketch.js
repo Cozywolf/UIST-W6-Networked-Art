@@ -2,7 +2,6 @@ var SOCKET_URL = 'wss://fierce-plains-17880.herokuapp.com/';
 var TEAM_NAME = 'letterpress';
 var socket;
 
-
 var theta1;
 var theta2;
 var randomX;
@@ -11,7 +10,6 @@ var strokeR;
 var strokeG;
 var strokkB;
 var leafRed, leafGreen;
-var cloudGenerate = [];
 
 var ang = 0;
 var angle = ang + Math.PI / 2; //largest sine value for largest sun size
@@ -31,16 +29,21 @@ var leafchange = 0;
 var leafRed;
 var leafGreen;
 var flower = [];
-var flowerLimit = 20;
+var flowerLimit = 30;
 var flowerColorRed, flowerColorBlue, flowerColorGreen;
 var star = [];
 var starLimit = 20;
+var cloud = [];
+var cloudLimit = 20;
+
+
 
 function setup() {
   socket = io(SOCKET_URL + TEAM_NAME); // Open a socket connection to the server.
   stroke(153, 102, 51);
   socket.on('flower', addFlower);
   socket.on('star', addStar);
+  socket.on('cloud', addCloud);
 }
 
 function draw() {
@@ -60,22 +63,32 @@ function draw() {
   b = 192 + (1 - Math.abs(x / 560)) * 63;
   dk = Math.abs(x / 560) * 150;
 
-//draw star and cloud
-push(); // No.1
-  for (var i = 0; i < star.length; ++i) {
-    fill(star[i].c);
-    noStroke();
-    var pikerandom = random(80, 100);
-    if (y > 0) {
-      fill(star[i].c)
-      ellipse(star[i].x, star[i].y, pikerandom*2, pikerandom);
-    } else
-      ellipse(star[i].x, star[i].y, pikerandom/4, 4);
-      ellipse(star[i].x, star[i].y, 4, pikerandom/4);
+  //draw star and cloud
+  push(); // No.1
+  if (y > 0) {
+    for (var i = 0; i < cloud.length; ++i) {
+      fill(cloud[i].c);
+      noStroke();
+      var pikerandom = random(85, 100);
+      fill(cloud[i].c)
+      ellipse(cloud[i].x, cloud[i].y, pikerandom * 2.3, pikerandom * 0.8);
+      ellipse(cloud[i].x + 2 * pikerandom / 3, cloud[i].y - pikerandom / 3, 0.66 * pikerandom, 0.66 * pikerandom);
+      ellipse(cloud[i].x, cloud[i].y - pikerandom / 4, pikerandom * 1.4, pikerandom * 1.2);
+    }
   }
-pop();  // No.1
+  if (y < 0) {
+    for (var i = 0; i < star.length; ++i) {
+      fill(star[i].c);
+      noStroke();
+      var pikerandom = random(50, 100);
+      fill(star[i].c)
+      ellipse(star[i].x, star[i].y, pikerandom / 3, 3);
+      ellipse(star[i].x, star[i].y, 3, pikerandom / 3);
+    }
+  }
+  pop(); // No.1
 
-//sun size and location
+  //sun size and location
   push(); // No.2
   translate(windowWidth / 2, windowHeight);
   var d1 = 50 + (sin(angle) * windowWidth / 35) + windowWidth / 35;
@@ -118,22 +131,22 @@ pop();  // No.1
   ellipse(windowWidth, 1.1 * windowHeight, 2 * 0.6 * windowWidth, 2 * 0.38 * windowHeight)
   pop(); // No.5
 
-//draw bigflower
-push();
+  //draw flower
+  push();
   translate(-windowWidth / 2, -windowHeight);
   for (var i = 0; i < flower.length; ++i) {
     strokeWeight(3);
-    line(flower[i].x,flower[i].y,flower[i].x, flower[i].y-50);
+    line(flower[i].x, flower[i].y, flower[i].x, flower[i].y - 50);
     fill(flower[i].c);
     strokeWeight(0);
-    ellipse(flower[i].x+15, flower[i].y-50, 20, 20);
-    ellipse(flower[i].x-15, flower[i].y-50, 20, 20);
-    ellipse(flower[i].x, flower[i].y-35, 20, 20);
-    ellipse(flower[i].x, flower[i].y-65, 20, 20);
-    fill(215,135,128);
-    ellipse(flower[i].x, flower[i].y-50, 20, 20);
+    ellipse(flower[i].x + 15, flower[i].y - 50, 20, 20);
+    ellipse(flower[i].x - 15, flower[i].y - 50, 20, 20);
+    ellipse(flower[i].x, flower[i].y - 35, 20, 20);
+    ellipse(flower[i].x, flower[i].y - 65, 20, 20);
+    fill(215, 135, 128);
+    ellipse(flower[i].x, flower[i].y - 50, 20, 20);
   }
-pop();
+  pop();
 
 
   //tree swing
@@ -163,17 +176,20 @@ pop();
 
   // draw the first(center) tree
   push(); // No.6
+  stroke(139,69,19);
   branch(0.2 * windowHeight, 0.02 * windowHeight);
   pop(); // No.6
 
   // draw the second (left) tree
   push(); // No.7
+  stroke(112,128,144);
   translate(-windowWidth / 3, -windowHeight / 6)
   branch(0.1 * windowHeight, 0.01 * windowHeight);
   pop(); // No.7
 
   // draw the third (right) tree
   push(); // No.8
+  stroke(165,42,42);
   translate(windowWidth / 3, -windowHeight / 4)
   branch(0.05 * windowHeight, 0.005 * windowHeight);
   pop(); // No.8
@@ -252,6 +268,15 @@ function addStar(x, y, r, g, b) {
   if (starLimit > 0 && star.length > starLimit) star.shift();
 }
 
+function addCloud(x, y, r, g, b) {
+  cloud.push({
+    x: x,
+    y: y,
+    c: 'rgb(' + r + ',' + g + ',' + b + ')'
+  });
+  if (cloudLimit > 0 && cloud.length > cloudLimit) cloud.shift();
+}
+
 function mousePressed() {
   if (mouseY > 0.7 * windowHeight) {
     flowerColorRed = floor(random(0, 255));
@@ -259,7 +284,13 @@ function mousePressed() {
     flowerColorBlue = floor(random(0, 255));
     addFlower(mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
     socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
-  } else if (mouseY < 0.7 * windowHeight) {
+  } else if (mouseY < 0.7 * windowHeight && y > 0) {
+    cloudColorRed = floor(random(0, 255));
+    cloudColorGreen = floor(random(0, 255));
+    cloudColorBlue = floor(random(0, 255));
+    addCloud(mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
+    socket.emit('cloud', mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
+  } else if (mouseY < 0.7 * windowHeight && y < 0) {
     starColorRed = floor(random(0, 255));
     starColorGreen = floor(random(0, 255));
     starColorBlue = floor(random(0, 255));
