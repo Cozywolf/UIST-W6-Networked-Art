@@ -34,24 +34,39 @@ var flowerColorRed, flowerColorBlue, flowerColorGreen;
 var star = [];
 var starLimit = 20;
 var cloud = [];
-var cloudLimit = 15;
+var cloudLimit = 10;
 
+var chat = [];
+var chatLimit = 20;
 
 
 function setup() {
   socket = io(SOCKET_URL + TEAM_NAME); // Open a socket connection to the server.
-  stroke(153, 102, 51);
+
+  input = createInput();
+  input.position(20, 20);
+
+  button = createButton('submit');
+  button.position(150, 20);
+  button.mousePressed(addChat);
+
+  greeting = createElement('h2', 'what is your name?');
+  greeting.position(20, 30);
+
+  textAlign(CENTER)
+  textSize(50);
+
   socket.on('flower', addFlower);
   socket.on('star', addStar);
   socket.on('cloud', addCloud);
   socket.on('clear', clearAll);
+  socket.on('chat', chatPush);
 }
 
 function draw() {
   createCanvas(windowWidth, windowHeight);
-  d = 0.45 * windowWidth;
-  x = d * cos(ang);
-  y = d * sin(ang);
+ x = 0.6 * windowWidth* cos(ang);
+ y = 0.95 * windowHeight * sin(ang);
 
   // sky color change
   if (y > 0) {
@@ -67,10 +82,11 @@ function draw() {
   //draw star and cloud
   push(); // No.1
   if (y > 0) {
+    star = [];
     for (var i = 0; i < cloud.length; ++i) {
       fill(cloud[i].c);
       noStroke();
-      var pikerandom = random(85, 100);
+      var pikerandom = 0.6*random(85, 100);
       fill(cloud[i].c)
       ellipse(cloud[i].x, cloud[i].y, pikerandom * 2.3, pikerandom * 0.8);
       ellipse(cloud[i].x + 2 * pikerandom / 3, cloud[i].y - pikerandom / 3, 0.66 * pikerandom, 0.66 * pikerandom);
@@ -78,6 +94,7 @@ function draw() {
     }
   }
   if (y < 0) {
+    cloud = [];
     for (var i = 0; i < star.length; ++i) {
       fill(star[i].c);
       noStroke();
@@ -100,6 +117,7 @@ function draw() {
 
   // moon size and location
   fill(255, 204, 0);
+  stroke(255, 204, 0);
   arc(-x, y, d1, d1, PI / 4, PI + QUARTER_PI, CHORD);
   pop(); // No.3
 
@@ -135,6 +153,7 @@ function draw() {
   translate(-windowWidth / 2, -windowHeight);
   for (var i = 0; i < flower.length; ++i) {
     strokeWeight(3);
+    stroke(51, 153, 51);
     line(flower[i].x, flower[i].y, flower[i].x, flower[i].y - 50);
     fill(flower[i].c);
     strokeWeight(0);
@@ -175,20 +194,20 @@ function draw() {
 
   // draw the first(center) tree
   push(); // No.6
-  stroke(139,69,19);
+  stroke(139, 69, 19);
   branch(0.2 * windowHeight, 0.02 * windowHeight);
   pop(); // No.6
 
   // draw the second (left) tree
   push(); // No.7
-  stroke(112,128,144);
+  stroke(112, 128, 144);
   translate(-windowWidth / 3, -windowHeight / 6)
   branch(0.1 * windowHeight, 0.01 * windowHeight);
   pop(); // No.7
 
   // draw the third (right) tree
   push(); // No.8
-  stroke(165,42,42);
+  stroke(165, 42, 42);
   translate(windowWidth / 3, -windowHeight / 4)
   branch(0.05 * windowHeight, 0.005 * windowHeight);
   pop(); // No.8
@@ -298,46 +317,27 @@ function mousePressed() {
   }
 }
 
-function keyPressed(){
-  if(keyCode===32){
+function keyPressed() {
+  if (keyCode === 32) {
     clearAll();
     socket.emit('clear');
   }
 }
 
-function clearAll(){
+function clearAll() {
   star = [];
   cloud = [];
   flower = [];
 }
 
-// function addCloud(cloudx, cloudy, i) {
-//   push();
-//   num = random(80, 90);
-//   noStroke();
-//   fill(200, 200, 255);
-//   ellipse(cloudx + i, cloudy, num * 2, num);
-//   i += 5;
-//   pop()
-// }
+function addChat() {
+  var name = input.value();
+  greeting.html('Welcome '+name+'!');
+  socket.emit('chat', name);
+  input.value('');
+}
 
-// function keyPressed() {
-//   randomX = Math.floor(random(0,windowWidth));
-//   randomY = Math.floor(random(0,windowHeight));
-//   strokeR = Math.floor(random(0,200));
-//   strokeG = Math.floor(random(0,200));
-//   strokeB = Math.floor(random(0,200));
-//   stroke(strokeR,strokeG,strokeB);
-// }
-
-// function mousePressed() {
-//   if (mouseY <= windowHeight / 2) {
-//     var diameter = dist(mouseX, mouseY, windowWidth / 2, windowHeight - 200);
-//     if (diameter > 400) {
-//       j = mouseX;
-//       k = mouseY;
-//       i = 0;
-//       addCloud(j, k, i);
-//     }
-//   }
-// }
+function chatPush(text){
+  greeting.html(text+' just joined the game!');
+  input.value('');
+}
