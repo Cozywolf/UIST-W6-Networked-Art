@@ -302,7 +302,7 @@ function mousePressed() {
     flowerColorBlue = floor(random(0, 255));
     addFlower(mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
     socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
-  } else if (mouseY < 0.7 * windowHeight && y > 0) {
+  } else if (mouseY < 0.7 * windowHeight && y > 0 && mouseY > 80) {
     cloudColorRed = floor(random(0, 255));
     cloudColorGreen = floor(random(0, 255));
     cloudColorBlue = floor(random(0, 255));
@@ -318,7 +318,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  if (keyCode === 32) {
+  if (keyCode === 18) {
     clearAll();
     socket.emit('clear');
   }
@@ -338,6 +338,6 @@ function addChat() {
 }
 
 function chatPush(text){
-  greeting.html(text+' just joined the game!');
+  greeting.html(text+' just came to the garden!');
   input.value('');
 }
