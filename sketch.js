@@ -4,11 +4,6 @@ var socket;
 
 var theta1;
 var theta2;
-var randomX;
-var randomY;
-var strokeR;
-var strokeG;
-var strokkB;
 var leafRed, leafGreen;
 
 var ang = 0;
@@ -26,8 +21,6 @@ var swing = 0;
 var map1 = 400;
 var map2 = 400;
 var leafchange = 0;
-var leafRed;
-var leafGreen;
 var flower = [];
 var flowerLimit = 30;
 var star = [];
