@@ -4,7 +4,7 @@ Steven and TingWei's UIST 520 W6 assignment
 
 Requires local server to run
 
-Updates
+Updates 
 
 1. Commented out mousePressed() function.
 

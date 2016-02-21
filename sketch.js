@@ -302,11 +302,11 @@ function branch(len, thick) {
 
 
 function addRain() {
-  for (var i = 0; i< 10; i++){
-  rain.push({
-    x: random(5, windowWidth - 5),
-    y: random(5, windowHeight)
-  });
+  for (var i = 0; i < 10; i++) {
+    rain.push({
+      x: random(5, windowWidth - 5),
+      y: random(5, windowHeight)
+    });
   }
 }
 
@@ -414,51 +414,15 @@ function showResult() {
   console.log(mostrecentword);
 }
 
-function deviceTurned() {
-  if (orientation == "landscape") {
-    orientation = "portrait";
-  } else if (orientation == "portrait") {
-    orientation = "landscape";
-  }
-  console.log("phone orientation = " + orientation);
-}
-
 function deviceShaken() {
   addRain();
-  // if (orientation == "landscape"){
-  //draw rain
-  // for (var i = 0; i < rainLimit; i++) {
-  //   if (rain[i].x >= 0 && rain[i].y <= windowHeight) {
-  //     rain[i].x -= 15;
-  //     rain[i].y += 15;
-  //     stroke(100, 100, 255);
-  //     strokeWeight(2);
-  //     line(rain[i].x, rain[i].y, rain[i].x - 10, rain[i].y + 15);
-  //   } else {
-  //     rain[i].x = random(5, windowWidth);
-  //     rain[i].y = random(0, windowHeight);
-  //   }
-  //   console.log("Raining left.")
-  // }
-  // }
-  // else if (orientation == "portrait"){
-  //     //draw rain
-  //     for (var i = 0; i < rainLimit; i++) {
-  //       if (rain[i].x <= windowWidth && rain[i].y <= windowHeight) {
-  //         rain[i].x += 15;
-  //         rain[i].y += 15;
-  //         stroke(100, 100, 255);
-  //         strokeWeight(2);
-  //         line(rain[i].x, rain[i].y, rain[i].x + 10, rain[i].y + 15);
-  //       } else {
-  //         rain[i].x = random(0, windowWidth-5);
-  //         rain[i].y = random(0, windowHeight);
-  //       }
-  //       console.log("Raining right.")
-  //     }
-  // }
 }
-//
-// function raining (){
-//
+
+// function deviceTurned() {
+//   if (orientation == "landscape") {
+//     orientation = "portrait";
+//   } else if (orientation == "portrait") {
+//     orientation = "landscape";
+//   }
+//   console.log("phone orientation = " + orientation);
 // }
