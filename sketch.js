@@ -52,7 +52,7 @@ function setup() {
   textSize(50);
 
   messageSpeech = createElement('h3', 'Say "flower" to add flowers, "cloud" to add clouds, and "star" to add star.');
-  messageShake = createElement('h3', 'Shake your  to rain.');
+  messageShake = createElement('h3', 'Shake your phone to see what will happen.');
 
   messageSpeech.position(20, 80);
   messageShake.position(20, 120);
