@@ -292,21 +292,11 @@ function branch(len, thick) {
   }
 }
 
-
-// function addRain() {
-//   for (var i = 0; i < 10; i++) {
-//     rain.push({
-//       x: random(5, windowWidth - 5),
-//       y: random(5, windowHeight)
-//     });
-//   }
-// }
-
-function addRain(x, y) {
+function addRain() {
   for (var i = 0; i < 10; i++) {
     rain.push({
-      x: x,
-      y: y
+      x: random(5, windowWidth - 5),
+      y: random(5, windowHeight)
     });
   }
 }
@@ -403,11 +393,7 @@ function showResult() {
 }
 
 function deviceShaken() {
-  var rainX = random(5, windowWidth - 5);
-  var rainY = random(0, windowHeight);
-  addRain(x, y);
-  socket.emit('raining', rainX, rainY);
-  // socket.emit('deviceShaken', true);
+  addRain();
 }
 
 // function deviceTurned() {
