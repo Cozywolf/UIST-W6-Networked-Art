@@ -365,33 +365,36 @@ function chatPush(text) {
 
 function showResult() {
   var mostrecentword = myRec.resultString.split(' ').pop();
+  var cloudX, cloudY, cloudColorRed, cloudColorBlue, cloudColorGreen;
+  var starX, starY, starColorRed, starColorBlue, starColorGreen;
+  var flowerX, flowerY, flowerColorRed, flowerColorGreen, flowerColorBlue;
   if (mostrecentword.indexOf("flower") !== -1) {
-    for (int i = 0; i < 3; i ++){
-    var flowerX = floor(random(0, windowWidth));
-    var flowerY = floor(random(0.7 * windowHeight, windowHeight));
-    var flowerColorRed = floor(random(0, 255));
-    var flowerColorGreen = floor(random(0, 255));
-    var flowerColorBlue = floor(random(0, 255));
+    for (var i = 0; i < 3; i ++){
+    flowerX = floor(random(0, windowWidth));
+    flowerY = floor(random(0.7 * windowHeight, windowHeight));
+    flowerColorRed = floor(random(0, 255));
+    flowerColorGreen = floor(random(0, 255));
+    flowerColorBlue = floor(random(0, 255));
     addFlower(flowerX, flowerY, flowerColorRed, flowerColorGreen, flowerColorBlue);
     socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
   }
   } else if (mostrecentword.indexOf("star") !== -1) {
-    for (int i = 0; i < 3; i ++){
-    var starX = floor(random(0, windowWidth));
-    var starY = floor(random(40, 0.7 * windowHeight));
-    var starColorRed = floor(random(0, 255));
-    var starColorGreen = floor(random(0, 255));
-    var starColorBlue = floor(random(0, 255));
+    for (var i = 0; i < 3; i ++){
+    starX = floor(random(0, windowWidth));
+    starY = floor(random(40, 0.7 * windowHeight));
+    starColorRed = floor(random(0, 255));
+    starColorGreen = floor(random(0, 255));
+    starColorBlue = floor(random(0, 255));
     addStar(starX, starY, starColorRed, starColorGreen, starColorBlue);
     socket.emit('star', starX, starY, starColorRed, starColorGreen, starColorBlue);
   }
   } else if (mostrecentword.indexOf("cloud") !== -1) {
-    for (int i = 0; i < 3; i ++){
-    var cloudX = floor(random(0, windowWidth));
-    var cloudY = floor(random(40, 0.7 * windowHeight));
-    var cloudColorRed = floor(random(0, 255));
-    var cloudColorGreen = floor(random(0, 255));
-    var cloudColorBlue = floor(random(0, 255));
+    for (var i = 0; i < 3; i ++){
+    cloudX = floor(random(0, windowWidth));
+    cloudY = floor(random(40, 0.7 * windowHeight));
+    cloudColorRed = floor(random(0, 255));
+    cloudColorGreen = floor(random(0, 255));
+    cloudColorBlue = floor(random(0, 255));
     addCloud(cloudX, cloudY, cloudColorRed, cloudColorGreen, cloudColorBlue);
     socket.emit('cloud', mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
   }
