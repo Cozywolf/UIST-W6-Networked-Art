@@ -52,7 +52,7 @@ function setup() {
   textSize(50);
 
   messageSpeech = createElement('h3', 'Say "flower" to add flowers, "cloud" to add clouds, and "star" to add star.');
-  messageShake = createElement('h3', 'Shake your hand to rain.');
+  messageShake = createElement('h3', 'Shake your  to rain.');
 
   messageSpeech.position(20, 80);
   messageShake.position(20, 120);
@@ -61,10 +61,9 @@ function setup() {
   myRec.start();
 
 
-  socket.emit('sense', {
-    deviceShaken: true
-  });
+  socket.emit('sense', {deviceShaken: true});
   socket.on('deviceShaken', deviceShaken);
+  socket.on('raining', addRain);
   socket.on('flower', addFlower);
   socket.on('star', addStar);
   socket.on('cloud', addCloud);
@@ -294,11 +293,20 @@ function branch(len, thick) {
 }
 
 
-function addRain() {
+// function addRain() {
+//   for (var i = 0; i < 10; i++) {
+//     rain.push({
+//       x: random(5, windowWidth - 5),
+//       y: random(5, windowHeight)
+//     });
+//   }
+// }
+
+function addRain(x, y) {
   for (var i = 0; i < 10; i++) {
     rain.push({
-      x: random(5, windowWidth - 5),
-      y: random(5, windowHeight)
+      x: x,
+      y: y
     });
   }
 }
@@ -330,28 +338,6 @@ function addCloud(x, y, r, g, b) {
   if (cloudLimit > 0 && cloud.length > cloudLimit) cloud.shift();
 }
 
-// function mousePressed() {
-//   if (mouseY > 0.7 * windowHeight) {
-//     flowerColorRed = floor(random(0, 255));
-//     flowerColorGreen = floor(random(0, 255));
-//     flowerColorBlue = floor(random(0, 255));
-//     addFlower(mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
-//     socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
-//   } else if (mouseY < 0.7 * windowHeight && y > 0 && mouseY > 80) {
-//     cloudColorRed = floor(random(0, 255));
-//     cloudColorGreen = floor(random(0, 255));
-//     cloudColorBlue = floor(random(0, 255));
-//     addCloud(mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
-//     socket.emit('cloud', mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
-//   } else if (mouseY < 0.7 * windowHeight && y < 0) {
-//     starColorRed = floor(random(0, 255));
-//     starColorGreen = floor(random(0, 255));
-//     starColorBlue = floor(random(0, 255));
-//     addStar(mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
-//     socket.emit('star', mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
-//   }
-// }
-
 function keyPressed() {
   if (keyCode === 18) {
     clearAll();
@@ -380,6 +366,7 @@ function chatPush(text) {
 function showResult() {
   var mostrecentword = myRec.resultString.split(' ').pop();
   if (mostrecentword.indexOf("flower") !== -1) {
+    for (int i = 0; i < 3; i ++){
     var flowerX = floor(random(0, windowWidth));
     var flowerY = floor(random(0.7 * windowHeight, windowHeight));
     var flowerColorRed = floor(random(0, 255));
@@ -387,7 +374,9 @@ function showResult() {
     var flowerColorBlue = floor(random(0, 255));
     addFlower(flowerX, flowerY, flowerColorRed, flowerColorGreen, flowerColorBlue);
     socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
+  }
   } else if (mostrecentword.indexOf("star") !== -1) {
+    for (int i = 0; i < 3; i ++){
     var starX = floor(random(0, windowWidth));
     var starY = floor(random(40, 0.7 * windowHeight));
     var starColorRed = floor(random(0, 255));
@@ -395,7 +384,9 @@ function showResult() {
     var starColorBlue = floor(random(0, 255));
     addStar(starX, starY, starColorRed, starColorGreen, starColorBlue);
     socket.emit('star', starX, starY, starColorRed, starColorGreen, starColorBlue);
+  }
   } else if (mostrecentword.indexOf("cloud") !== -1) {
+    for (int i = 0; i < 3; i ++){
     var cloudX = floor(random(0, windowWidth));
     var cloudY = floor(random(40, 0.7 * windowHeight));
     var cloudColorRed = floor(random(0, 255));
@@ -404,11 +395,16 @@ function showResult() {
     addCloud(cloudX, cloudY, cloudColorRed, cloudColorGreen, cloudColorBlue);
     socket.emit('cloud', mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
   }
+  }
   console.log(mostrecentword);
 }
 
 function deviceShaken() {
-  addRain();
+  var rainX = random(5, windowWidth - 5);
+  var rainY = random(0, windowHeight);
+  addRain(x, y);
+  socket.emit('raining', rainX, rainY);
+  // socket.emit('deviceShaken', true);
 }
 
 // function deviceTurned() {
@@ -418,4 +414,27 @@ function deviceShaken() {
 //     orientation = "landscape";
 //   }
 //   console.log("phone orientation = " + orientation);
+// }
+
+
+// function mousePressed() {
+//   if (mouseY > 0.7 * windowHeight) {
+//     flowerColorRed = floor(random(0, 255));
+//     flowerColorGreen = floor(random(0, 255));
+//     flowerColorBlue = floor(random(0, 255));
+//     addFlower(mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
+//     socket.emit('flower', mouseX, mouseY, flowerColorRed, flowerColorGreen, flowerColorBlue);
+//   } else if (mouseY < 0.7 * windowHeight && y > 0 && mouseY > 80) {
+//     cloudColorRed = floor(random(0, 255));
+//     cloudColorGreen = floor(random(0, 255));
+//     cloudColorBlue = floor(random(0, 255));
+//     addCloud(mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
+//     socket.emit('cloud', mouseX, mouseY, cloudColorRed, cloudColorGreen, cloudColorBlue);
+//   } else if (mouseY < 0.7 * windowHeight && y < 0) {
+//     starColorRed = floor(random(0, 255));
+//     starColorGreen = floor(random(0, 255));
+//     starColorBlue = floor(random(0, 255));
+//     addStar(mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
+//     socket.emit('star', mouseX, mouseY, starColorRed, starColorGreen, starColorBlue);
+//   }
 // }
